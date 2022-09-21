@@ -1,0 +1,8 @@
+1 practice 
+    library for math 
+    1 theme sub to us ? Yes 
+    2 How much time ? 
+1 lection 
+    dir(str) -for list all methods for string
+    help(str.isdigit) for showing instructions for some method 
+2 practice
