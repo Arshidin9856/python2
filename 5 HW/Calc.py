@@ -228,19 +228,13 @@ def calc(x):
             ind=calc_entry.get().find(st)
             calc_entry.delete(ind,ind+1)
             calc_entry.insert(ind,math.log(float(st))) 
-
-      
-
-
 r = 1
 c = 0
 for i in bttn_list:
-    
     cmd=lambda x=i: calc(x)
     ttk.Button(root, text=i,command=cmd, width = 10).grid(row=r, column = c)
     c += 1
     if c >= 8:
         c = 0
         r += 1
-
 root.mainloop()

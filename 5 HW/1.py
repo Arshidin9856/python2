@@ -22,6 +22,7 @@ class Calc():
 	def numberEnter(self, num):
 		self.result=False
 		firstnum=txtDisplay.get()
+
 		secondnum=str(num)
 		if self.input_value:
 			self.current = secondnum
