@@ -33,19 +33,19 @@ cursor = conn.cursor()
 # print(users)
 
 # 5 Task
-# id=101
-# age='5'
-# sql1=f"UPDATE professor SET experience = {age} WHERE Prof_id  = {id};"
-# sql2="select * from professor;"
-# cursor.execute(sql1)
-# cursor.execute(sql2)
+id=102
+age='10'
+sql1=f"UPDATE professor SET experience = {age} WHERE Prof_id  = {id};"
+sql2="select * from professor;"
+cursor.execute(sql1)
+cursor.execute(sql2)
 
-# users = cursor.fetchall()
-# for i in users:
-#     for j in i:
-#         if i[-1]==age:
-#             print(i)
-#             break
+users = cursor.fetchall()
+for i in users:
+    for j in i:
+        if i[-1]==age:
+            print(i)
+            break
 # print(users)
 
 
