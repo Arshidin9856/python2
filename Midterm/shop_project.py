@@ -2,13 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 import tkinter as ttk
 from PIL import Image , ImageTk
-import psycopg2
 from config import params
-import time
-import datetime
-import re
-import os
+import time, datetime, re, os, psycopg2
 
+# create db tables
 def create_table_orders():
     SQL = (
         '''
@@ -31,501 +28,9 @@ def create_table_orders():
         
     except Exception as Error:
         print(str(Error))
-
 def create_table_users():
     SQL = (
-        '''0..........................................................................................................................................0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
+        '''
         CREATE TABLE IF NOT EXISTS Users_Shop (
         User_ID serial Primary key,
         Name VARCHAR(255) NOT NULL , 
@@ -545,9 +50,6 @@ def create_table_users():
         
     except Exception as Error:
         print(str(Error))
-
-
-
 def create_table_product():
     SQL = (
         '''
@@ -559,24 +61,33 @@ def create_table_product():
         ) 
         '''
     )
-
+    SQL_add_products=('''
+    Insert into products_shop (product,quantity,price) 
+    values   ('Monkey', '10', '10000')
+            ,('Panda','10','30000')
+            ,('Zebra','15','20000')
+            ,('Tiger','8','50000')
+            ,('Crocodile', '5', '15000')
+            ,('White Bear', '2','40000')
+            ,('Lion', '15','25000')
+            ,('Koala','7','10000')
+    ''')
     try:
         config = psycopg2.connect(**params)
         query = config.cursor()
         query.execute(SQL)
+        query.execute(SQL_add_products)
         query.close()
         config.commit()
         
     except Exception as Error:
         print(str(Error))
-
-
 create_table_users()
 create_table_product()
 create_table_orders()
 
 user_email = ''
-
+# place all buttons,images on main screen
 def Window():
     global root
     root = Tk()
@@ -600,8 +111,7 @@ def Window():
 
 
     root.mainloop()
-
-
+# creating pages
 def str_about_us():
     global root
     str_aboutus = Tk()
@@ -611,7 +121,7 @@ def str_about_us():
     root.destroy()    
 
     str_aboutus.mainloop()
-
+# special user who can see bought products
 def admin():
     admin_page = Tk()
     admin_page.title("Admin")
@@ -662,7 +172,6 @@ def admin():
     bprod.pack()
     bname = Button(admin_page,text="find by name", command=fname)
     bname.pack()
-
 def str_login():
     global root, p_login
     p_login = Tk()
@@ -679,11 +188,11 @@ def str_login():
     label_password.place(x=278,y=180)
     entry_password = Entry(p_login, show="*")
     entry_password.place(x=450,y=180)
+    #  checking for corectness of login by login(primary key it's email) 
     def check():
         global user_email
         user_email = entry_name.get()
         SQL = "Select * from Users_Shop where email  = '" + user_email +"' and password = '" + entry_password.get() +"'" 
-        # print("Here")
         try:
             config = psycopg2.connect(**params)
             query = config.cursor()
@@ -704,11 +213,8 @@ def str_login():
             label_war = Label(p_login, text="The user with that email doesnt exists!\nTry again!",width=30,font=("bold", 10))
             label_war.place(x=350,y=500)
     Button(p_login, text='Login', command = check, width=20,bg='red',fg='white').place(x=390,y=230)
-    print(user_email)
     root.destroy()
     p_login.mainloop()
-
-
 def str_reg():
     global p_reg
     p_reg = Tk()
@@ -716,16 +222,16 @@ def str_reg():
     p_reg.geometry("1000x600")
 
     def reg_user():
-        b=False
+        corect_valid=False
         name = entry_name.get()
         email = entry_email.get()
         telephone = entry_telephone.get() #87761812566
         password = entry_password.get()
       
-
+        #  checking validation for name,phone,password 
         try:
             if re.findall('\W',name)==[] and re.search('([+]7|8)\d{10}',telephone)[0]==telephone and re.search('.{8,}$',password)[0]==password:
-                b=True
+                corect_valid=True
                 
         except Exception as Error:
             print(str(Error))
@@ -742,12 +248,12 @@ def str_reg():
             
         except Exception as Error:
             print(str(Error))
-
+        # checking uniqness of email
         if len(res)!=0:
             label_war = Label(p_reg, text="The user with that email already exists!\nTry again!",width=30,font=("bold", 10))
             label_war.place(x=350,y=500)
         else:
-            if b:
+            if corect_valid:
                 
                 SQL = "Insert into Users_Shop (Name,Telephone,Email,Password) values ('"+name+"', '"+telephone+"','"+email+"', '"+password+"')"
                 try:
@@ -788,8 +294,7 @@ def str_reg():
     Button(p_reg, text='Submit',width=20,bg='red',fg='white', command= reg_user).place(x=390,y=380)
 
     p_reg.mainloop()
-
-
+# page of products where you can buy them
 def str_variants():
     global flag
     str_products = Tk()
@@ -797,9 +302,6 @@ def str_variants():
     str_products.geometry("1000x600")
     p_login.destroy()
 
-
-    
-    
     SQL = "Select * from products_shop"
  
     try:
@@ -812,10 +314,10 @@ def str_variants():
         
     except Exception as Error:
         print(str(Error))
-    print(res)
 
 
     flag=False
+    # for buing exact some product
     def buy_1():
         global root, p_pay
         p_pay = Tk()
@@ -828,6 +330,7 @@ def str_variants():
         label_name.place(x=290,y=130)
         entry_name = Entry(p_pay)
         entry_name.place(x=450,y=130)
+        
         def pay():
             SQL = "Select * from products_shop"
  
@@ -847,17 +350,14 @@ def str_variants():
             p_check = Tk()
             p_check.title("Check")
             p_check.geometry("1000x600")
-            # label_1 = Label(p_check, text='check',width=20,font=("bold", 10))
-            # label_1.grid(column = 0, row=0)
             credit_card=entry_name.get()
             credit_card=credit_card.replace(' ','')
-            # for i in credit_card:
             
             
-            
+            # valid for credit card len=16
             if re.search('[0-9]{16}',credit_card)[0]==credit_card:
                 
-
+                # make order
                 tim=datetime.datetime.now()
                 SQL = "INSERT into orders (user_name,product_name,money,date_of_order) values ('" + user_email +"','"+res[0][1]+"','"+str(res[0][3]) +"','" + str(tim) + "')"
                 try:
@@ -869,6 +369,7 @@ def str_variants():
                     
                 except Exception as Error:
                     print(str(Error))
+                # take away 1 product if it's>0 (if we have it in our shop)
                 new = int(res[0][2])-1
                 if new > 0:
                     SQL = "UPDATE products_shop SET quantity = '" + str(new) +"'  WHERE product_id ='" + str(res[0][0]) +"';"  
@@ -882,7 +383,7 @@ def str_variants():
                         print(str(Error))
                         
                     
-            
+                    # create check
                     label_1 = Label(p_check, text=f"Shop 1: {res[0][1]} ------------------ '"+str(res[0][3]) +"'   thank you!",width=200,font=("bold", 10))
                     label_1.pack()
                     f= open("check.txt","w+")
@@ -900,15 +401,12 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+                
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-        
-
+    
     label_1 = Label(str_products, text=res[0][1],width=20,font=("bold", 10))
     label_1.grid(column = 0, row=0)
     b1 = Button(str_products,text=str(res[0][3]) + " USD",command = buy_1, width=20,bg='red',fg='white')
@@ -926,6 +424,7 @@ def str_variants():
         label_name.place(x=290,y=130)
         entry_name = Entry(p_pay)
         entry_name.place(x=450,y=130)
+        # same function for all products
         def pay():
             SQL = "Select * from products_shop"
  
@@ -945,11 +444,8 @@ def str_variants():
             p_check = Tk()
             p_check.title("Check")
             p_check.geometry("1000x600")
-            # label_1 = Label(p_check, text='check',width=20,font=("bold", 10))
-            # label_1.grid(column = 0, row=0)
             credit_card=entry_name.get()
             credit_card=credit_card.replace(' ','')
-            # for i in credit_card:
             
             
             
@@ -999,13 +495,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+        
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
 
     label_2 = Label(str_products, text=res[1][1],width=20,font=("bold", 10))
     label_2.grid(column = 1, row=0)
@@ -1096,15 +590,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+              
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_3 = Label(str_products, text=res[2][1],width=20,font=("bold", 10))
     label_3.grid(column = 2, row=0)
@@ -1195,15 +685,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+              
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_4 = Label(str_products, text=res[3][1],width=20,font=("bold", 10))
     label_4.grid(column = 3, row=0)
@@ -1294,15 +780,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+                
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_5 = Label(str_products, text=res[4][1],width=20,font=("bold", 10))
     label_5.grid(column = 0, row=2)
@@ -1393,15 +875,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
 
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_6 = Label(str_products, text=res[5][1],width=20,font=("bold", 10))
     label_6.grid(column = 1, row=2)
@@ -1492,15 +970,11 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+               
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_7 = Label(str_products, text=res[6][1],width=20,font=("bold", 10))
     label_7.grid(column = 2, row=2)
@@ -1591,25 +1065,17 @@ def str_variants():
                 label_nam = Label(p_pay, text="wrong input",width=20,font=("bold", 10))
                 label_nam.place(x=450,y=400)
                 p_check.destroy()
-                # root.destroy()
-
+              
         Button(p_pay, text='pay', command = pay, width=20,bg='red',fg='white').place(x=390,y=230)
     
         root.destroy()
         p_pay.mainloop()
-
-
-
 
     label_8 = Label(str_products, text=res[7][1],width=20,font=("bold", 10))
     label_8.grid(column = 3, row=2)
     b8 = Button(str_products,text=str(res[7][3]) + " USD",command = buy_8, width=20,bg='red',fg='white')
     b8.grid(column = 3, row = 3)
 
-
-
-    
-
-
     str_products.mainloop()
+
 Window()
